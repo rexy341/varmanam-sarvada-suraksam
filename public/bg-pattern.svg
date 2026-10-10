@@ -1,0 +1,48 @@
+<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tileable background texture: waves, a spiral, a coil, and a swirl,
+       in white and dark navy at low opacity, meant to sit under white
+       cards on a soft teal base color (set separately via CSS). -->
+
+  <!-- long wave, dark navy -->
+  <path d="M-20 60 C 20 30, 60 30, 100 60 S 180 90, 220 60 S 300 30, 340 60"
+        fill="none" stroke="#0F2A4A" stroke-width="3" stroke-linecap="round" opacity="0.10"/>
+
+  <!-- second wave, white, offset lower -->
+  <path d="M-20 250 C 20 220, 60 220, 100 250 S 180 280, 220 250 S 300 220, 340 250"
+        fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- spiral, navy -->
+  <path d="M180 140
+           m 0 0
+           a 6 6 0 1 1 -0.1 0
+           M180 140
+           C 190 140, 196 148, 194 158
+           C 192 170, 178 176, 166 170
+           C 152 163, 148 146, 158 134
+           C 170 120, 192 124, 200 140"
+        fill="none" stroke="#0F2A4A" stroke-width="2.4" stroke-linecap="round" opacity="0.14"/>
+
+  <!-- coil, white, spring-like zigzag loops -->
+  <path d="M40 190
+           q 10 -18 20 0
+           q 10 18 20 0
+           q 10 -18 20 0
+           q 10 18 20 0
+           q 10 -18 20 0"
+        fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- swirl, navy S-curve with curled ends -->
+  <path d="M250 210
+           C 270 200, 280 215, 268 228
+           C 258 238, 262 250, 276 248
+           M244 204
+           a 5 5 0 1 0 0.1 0"
+        fill="none" stroke="#0F2A4A" stroke-width="2.4" stroke-linecap="round" opacity="0.12"/>
+
+  <!-- small extra spiral, white, top-right corner for rhythm -->
+  <path d="M280 40
+           C 288 40, 293 46, 291 54
+           C 289 63, 278 67, 270 61
+           C 261 55, 259 42, 268 34"
+        fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" opacity="0.45"/>
+</svg>

@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public, no-login read access: hazard status and safe zones are shown on the
+    // unauthenticated /map page so anyone can check them before deciding to sign up.
+    // Writes to these still require sign-in (covered by the catch-all rule below).
+    match /hazard/{docId} {
+      allow read: if true;
+    }
+    match /safeZones/{docId} {
+      allow read: if true;
+    }
+
+    // Demo rules: any signed-in user can read and write everything else.
+    // Tighten before any real deployment (see README).
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

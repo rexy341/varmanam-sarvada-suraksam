@@ -1,0 +1,626 @@
+:root {
+  --ink: #0f2a4a;
+  --ink-2: #1d3f6b;
+  --signal: #e8590c;
+  --water: #1971c2;
+  --ok: #2f9e44;
+  --amber: #f08c00;
+  --alert: #c92a2a;
+  --bg: #dcf0f2;
+  --card: #ffffff;
+  --line: #d5dde6;
+  --text: #16212f;
+  --muted: #5b6b7e;
+  --radius: 14px;
+  --shadow: 0 4px 16px rgba(15, 42, 74, 0.10), 0 1px 3px rgba(15, 42, 74, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 42, 74, 0.18);
+  --grad-hero: radial-gradient(120% 90% at 15% 0%, #163f68 0%, #0a1c33 55%), linear-gradient(160deg, #0a1c33 0%, #0F2A4A 45%, #143654 100%);
+  --grad-primary: linear-gradient(135deg, #ff7a3d 0%, #e8590c 60%, #c9440a 100%);
+  --grad-teal: linear-gradient(135deg, #0f9e93 0%, #0c7d8f 100%);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+/* Soft teal/blue backdrop with a tileable wave/spiral/coil/swirl pattern,
+   used on every page except Landing (which keeps its own rain/gradient
+   background, set on .landing and rendered full-bleed on top of this). */
+body {
+  background-color: var(--bg);
+  background-image: url('/bg-pattern.svg');
+  background-repeat: repeat;
+  background-size: 320px 320px;
+  color: var(--text); line-height: 1.5; font-size: 16px;
+}
+h1, h2, h3 { line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1rem; }
+p { margin: 0 0 12px; }
+a { color: var(--water); }
+small { color: var(--muted); }
+:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
+
+/* Top bar */
+.topbar {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--ink); color: #fff; padding: 10px 16px;
+}
+.brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+.brand strong { display: block; font-size: 1.05rem; }
+.brand small { display: block; color: #a9bbd1; font-size: 0.8rem; margin-top: -2px; }
+.brand-mark-btn {
+  background: none; border: none; padding: 0; margin-bottom: 12px; cursor: default;
+  -webkit-tap-highlight-color: transparent; user-select: none; line-height: 0;
+}
+.topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+
+/* Language switcher — small globe + native select, Google-style */
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px; padding: 4px 6px; font-size: 0.8rem;
+}
+.lang-switch select {
+  background: transparent; color: inherit; border: none; font: inherit;
+  cursor: pointer; padding-right: 2px;
+}
+.lang-switch select option { color: #16212f; }
+.lang-switch-floating {
+  /* position: fixed (not absolute) so on desktop, where nothing in its ancestor chain
+     has a transform, it still pins to the viewport corner exactly as before. On the
+     phone layout below, .landing-overlay gets a transform (to centre the Varman card),
+     which — per the CSS spec — makes that card the containing block for this fixed
+     element too, so it lands in the card's own corner instead of the screen's. */
+  position: fixed; top: 16px; right: 16px; z-index: 2;
+  color: #fff;
+}
+
+/* Layout */
+.container { max-width: 760px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+.container.wide { max-width: 1240px; }
+.container.narrow { max-width: 460px; margin-top: 24px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.stack { display: grid; gap: 12px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row.between { justify-content: space-between; }
+.fine { font-size: 0.875rem; color: var(--muted); margin: 8px 0 0; }
+.center-text { text-align: center; display: grid; justify-items: center; gap: 4px; }
+.center-screen { min-height: 100vh; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; text-align: center; }
+
+/* Landing */
+.landing {
+  position: relative; overflow: hidden; min-height: 100vh;
+  background: var(--grad-hero);
+  color: #fff; display: grid; place-items: center; padding: 24px;
+}
+.landing-inner { max-width: 520px; position: relative; z-index: 1; }
+.landing h1 {
+  font-size: 2.8rem; margin-bottom: 12px; font-weight: 800; letter-spacing: -0.02em;
+  background: linear-gradient(120deg, #ffffff 0%, #ffd8bd 55%, #ff9d5c 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lead { font-size: 1.15rem; color: #cbd8e8; }
+.landing-actions { display: grid; gap: 12px; margin: 24px 0 12px; }
+.landing .fine { color: #9fb3ca; }
+
+/* Rain background: falling streaks over the stormy gradient, pure CSS, no image assets */
+.rain { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.rain .drop {
+  position: absolute; top: -10%; width: 1px; height: 70px;
+  background: linear-gradient(180deg, transparent, rgba(180, 210, 235, 0.55));
+  animation-name: rainfall; animation-timing-function: linear; animation-iteration-count: infinite;
+}
+@keyframes rainfall {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(115vh); opacity: 0.4; }
+}
+
+/* Lightning: jagged bolts near the edges, each with a couple of bright spark points along
+   it. No full-screen flash — the light stays local to the bolt itself (via the glow filter),
+   so it reads as lightning without the whole page flashing bright. Tuned to strike roughly
+   every 2-3s overall (staggered per-bolt so it doesn't read as a single repeating loop). */
+.bolt {
+  position: absolute; top: -4%; width: 30px; height: 58%; overflow: visible;
+  stroke: #eaf3ff; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 7px rgba(210, 230, 255, 0.95)) drop-shadow(0 0 16px rgba(140, 190, 255, 0.65));
+  opacity: 0; animation-name: bolt-strike; animation-timing-function: ease-in-out; animation-iteration-count: infinite;
+}
+.bolt-spark {
+  fill: #f4f9ff; stroke: none;
+  filter: drop-shadow(0 0 5px rgba(230, 240, 255, 1)) drop-shadow(0 0 10px rgba(160, 200, 255, 0.8));
+}
+@keyframes bolt-strike {
+  0%, 88%, 100% { opacity: 0; }
+  88.6% { opacity: 1; }
+  89% { opacity: 0.2; }
+  89.5% { opacity: 1; }
+  90.4% { opacity: 0; }
+}
+@media (max-width: 640px) {
+  /* Push further toward the screen edges (partly clipped by .rain's overflow:hidden is fine)
+     so a strike never sits behind the card, which spans nearly the full width on a phone. */
+  .bolt:nth-of-type(1) { left: -4% !important; }
+  .bolt:nth-of-type(2) { left: 4% !important; }
+  .bolt:nth-of-type(3) { left: 96% !important; }
+  .bolt:nth-of-type(4) { left: 104% !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rain { display: none; }
+}
+
+/* Landing: full-viewport vertical hazard bands. Each band is its own colour and fills
+   the whole page height; only the flood band (hazard-band-live) is clickable — the rest
+   are placeholders for hazards this build doesn't cover yet, dimmed and inert on purpose. */
+.landing-bands { padding: 0; background: none; display: block; }
+.hazard-bands {
+  position: absolute; inset: 0; display: flex; z-index: 0;
+}
+.hazard-band {
+  flex: 1 1 0; position: relative; display: flex; align-items: flex-end; justify-content: center;
+  text-decoration: none; color: #fff; overflow: hidden;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  transition: flex-grow 0.25s ease, filter 0.25s ease;
+}
+.hazard-band:last-child { border-right: none; }
+.hazard-band::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.05) 45%, rgba(0, 0, 0, 0.25) 100%);
+}
+.hazard-band--flood {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj4KICA8cGF0aCBkPSJNLTEwIDMwIFEgMTUgMTUsIDMwIDMwIFQgNzAgMzAgVCAxMTAgMzAgVCAxNTAgMzAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjE2Ii8+CiAgPHBhdGggZD0iTS0xMCA2NSBRIDE1IDUwLCAzMCA2NSBUIDcwIDY1IFQgMTEwIDY1IFQgMTUwIDY1IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC4xMiIvPgogIDxwYXRoIGQ9Ik0tMTAgMTAwIFEgMTUgODUsIDMwIDEwMCBUIDcwIDEwMCBUIDExMCAxMDAgVCAxNTAgMTAwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC4xNiIvPgo8L3N2Zz4='), linear-gradient(200deg, #2f7cc4 0%, #0b3050 100%);
+  background-size: 130px 130px, cover; background-repeat: repeat, no-repeat;
+}
+.hazard-band--cyclone {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj4KICA8cGF0aCBkPSJNNjAgNjAgQyA4MCA2MCwgOTAgNDUsIDc4IDMyIEMgNjggMjIsIDQ4IDI2LCA0NiA0MiBDIDQ0IDU2LCA1OCA2NiwgNzAgNTgiCiAgICAgICAgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuMTYiLz4KICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSIyIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjIiLz4KPC9zdmc+'), linear-gradient(200deg, #12a394 0%, #0a4a55 100%);
+  background-size: 110px 110px, cover; background-repeat: repeat, no-repeat;
+}
+.hazard-band--landslide {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj4KICA8cGF0aCBkPSJNMCAyMCBMIDM1IDQwIE0xNSAxMCBMIDUwIDMwIE0tMTAgNDUgTCAyNSA2NSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuMTQiLz4KICA8cGF0aCBkPSJNNzAgNzAgTCAxMDUgOTAgTTg1IDYwIEwgMTIwIDgwIE02MCA5NSBMIDk1IDExNSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuMTIiLz4KPC9zdmc+'), linear-gradient(200deg, #9c7440 0%, #4a341b 100%);
+  background-size: 120px 120px, cover; background-repeat: repeat, no-repeat;
+}
+.hazard-band--smog {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjMwIiByPSIxMCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC4wNyIvPgogIDxjaXJjbGUgY3g9IjU1IiBjeT0iNTAiIHI9IjE2IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA1Ii8+CiAgPGNpcmNsZSBjeD0iOTAiIGN5PSIyNSIgcj0iOCIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC4wOCIvPgogIDxjaXJjbGUgY3g9IjM1IiBjeT0iODUiIHI9IjE0IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA2Ii8+CiAgPGNpcmNsZSBjeD0iOTUiIGN5PSI5MCIgcj0iMTEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuMDciLz4KPC9zdmc+'), linear-gradient(200deg, #7c8794 0%, #2f3742 100%);
+  background-size: 120px 120px, cover; background-repeat: repeat, no-repeat;
+}
+.hazard-band--collapse {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj4KICA8cGF0aCBkPSJNMTAgMTAgTCA0NSA0NSBNNDUgMTAgTCAxMCA0NSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEuNiIgb3BhY2l0eT0iMC4xIi8+CiAgPHJlY3QgeD0iNjUiIHk9IjY1IiB3aWR0aD0iMTAiIGhlaWdodD0iNiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC4xIiB0cmFuc2Zvcm09InJvdGF0ZSgxMiA3MCA2OCkiLz4KICA8cmVjdCB4PSI4NSIgeT0iODAiIHdpZHRoPSIxNCIgaGVpZ2h0PSI3IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjA5IiB0cmFuc2Zvcm09InJvdGF0ZSgtOCA5MiA4MykiLz4KICA8cGF0aCBkPSJNNjAgMjAgTCA3NSAzNSBMIDY1IDQ1IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMS42IiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjEyIi8+Cjwvc3ZnPg=='), linear-gradient(200deg, #7d7f85 0%, #2c2e33 100%);
+  background-size: 120px 120px, cover; background-repeat: repeat, no-repeat;
+}
+.hazard-band--quake {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj4KICA8cGF0aCBkPSJNLTEwIDQwIEwgMjAgNDAgTCAyOCA1NSBMIDQwIDMwIEwgNTAgNTAgTCA2MCA0MCBMIDEzMCA0MCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuMTUiLz4KICA8cGF0aCBkPSJNLTEwIDkwIEwgMjUgOTAgTCAzNSA3OCBMIDQ1IDk1IEwgMTMwIDkwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC4xMSIvPgo8L3N2Zz4='), linear-gradient(200deg, #b6453f 0%, #4c1414 100%);
+  background-size: 120px 120px, cover; background-repeat: repeat, no-repeat;
+}
+.hazard-band-live { cursor: pointer; }
+.hazard-band-live:hover, .hazard-band-live:focus-visible { flex-grow: 1.6; }
+.hazard-band-live:hover::before, .hazard-band-live:focus-visible::before { background: rgba(0, 0, 0, 0.15); }
+.hazard-band:not(.hazard-band-live) { cursor: default; filter: saturate(0.55) brightness(0.8); }
+.hazard-band-inner {
+  position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; padding: 14px 4px min(9vh, 64px); width: 100%; text-align: center;
+}
+.hazard-band-icon-chip {
+  display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(2px); transition: transform 0.25s ease, background 0.25s ease;
+}
+.hazard-band-live:hover .hazard-band-icon-chip, .hazard-band-live:focus-visible .hazard-band-icon-chip {
+  transform: scale(1.08); background: rgba(255, 255, 255, 0.22);
+}
+.hazard-band-icon { opacity: 0.95; }
+.hazard-band-label {
+  font-size: 0.85rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+  word-break: break-word; overflow-wrap: anywhere; hyphens: auto; max-width: 100%;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+.hazard-band-sub {
+  font-size: 0.66rem; color: rgba(255, 255, 255, 0.8); max-width: 100px; line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.hazard-band-live .hazard-band-sub { color: rgba(255, 255, 255, 0.92); font-weight: 600; }
+.hazard-band-chevron {
+  font-size: 1.1rem; color: rgba(255, 255, 255, 0.75); margin-top: -2px;
+  animation: chevron-bounce 1.8s ease-in-out infinite;
+}
+@keyframes chevron-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+.hazard-band-soon-pill {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px; padding: 3px 9px; color: rgba(255, 255, 255, 0.85); margin-bottom: 2px;
+}
+
+/* Logo/title/tagline overlay, floating above the bands without covering their full width
+   so the bands underneath stay clickable everywhere the text doesn't sit. */
+.landing-overlay {
+  position: relative; z-index: 2; max-width: 420px; margin: 0 auto; padding: 11vh 24px 0;
+  text-align: center; display: flex; flex-direction: column; align-items: center;
+}
+.landing-card {
+  background: rgba(15, 42, 74, 0.5);
+  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  padding: 30px 26px 26px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  display: flex; flex-direction: column; align-items: center;
+}
+.landing-overlay .brand-mark-btn { margin-bottom: 10px; }
+.landing-overlay h1 { font-size: 2.2rem; }
+.landing-overlay .lead { font-size: 1rem; }
+.landing-overlay .fine { max-width: 340px; }
+.rescuer-link {
+  display: inline-block; margin-top: 14px; color: #fff; font-weight: 600; font-size: 0.9rem;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  /* Phone layout: six columns in a single row got too thin to read. Instead the six
+     bands split into two rows of three — top three, bottom three — each still a full
+     vertical block of colour (not a shrunk square icon tile), and each half sticks its
+     icon/name to the outer edge of the phone it's closest to (top row hugs the status
+     bar, bottom row hugs the home indicator). The Varman logo/title sit in their own
+     card, floating dead centre where the two rows meet, so it's never sitting on a
+     colour seam. */
+  .hazard-bands {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  .hazard-band:nth-child(3) { border-right: none; }
+  .hazard-band:nth-child(-n+3) { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+
+  /* Top row: anchor the block to the top of its cell, and reorder its contents so the
+     hazard name sits right at that top edge, with the icon and pill trailing inward
+     toward the centre card — a mirror of how the bottom row already reads (name at the
+     outer edge, icon next, pill closest to centre). */
+  .hazard-band:nth-child(-n+3) { align-items: flex-start; }
+  .hazard-band:nth-child(-n+3) .hazard-band-inner { padding: 8px 3px 4px; }
+  .hazard-band:nth-child(-n+3) .hazard-band-label { order: -3; }
+  .hazard-band:nth-child(-n+3) .hazard-band-icon-chip { order: -2; }
+  .hazard-band:nth-child(-n+3) .hazard-band-soon-pill { order: -1; }
+  .hazard-band:nth-child(-n+3) .hazard-band-sub { order: 0; }
+
+  /* Bottom row: unchanged order (pill, icon, name), block still bottom-anchored, so the
+     name already lands on the bottom edge — just tighten the padding for a shorter cell. */
+  .hazard-band:nth-child(n+4) .hazard-band-inner { padding: 4px 3px 10px; }
+
+  .hazard-band-sub { display: none; } /* narrow columns on phones: icon + label only */
+  .hazard-band-live .hazard-band-sub { display: block; font-size: 0.58rem; max-width: 74px; }
+  .hazard-band-label {
+    font-size: 0.62rem; letter-spacing: 0.01em;
+    /* Reserve the same height for every label (1 or 2 lines) so short and long
+       hazard names line up on the shared edge instead of the taller ones pushing
+       their icon/pill out of line with their neighbours. */
+    min-height: 2.3em; display: flex; align-items: center; justify-content: center;
+  }
+  .hazard-band-inner { gap: 5px; }
+  .hazard-band-icon-chip { width: 34px; height: 34px; }
+  .hazard-band-soon-pill { font-size: 0.5rem; padding: 2px 6px; }
+  .hazard-band-chevron { display: none; }
+
+  /* Varman logo/title: pulled out of the flow and centred as its own floating card,
+     sitting exactly on the boundary between the top and bottom rows so it never
+     overlaps a colour seam. Font sizes go back to the plain, lighter original scale. */
+  .landing-overlay {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 2; width: min(86vw, 320px); max-width: none; margin: 0;
+    padding: 18px 20px; border-radius: 18px; overflow: hidden;
+    background: linear-gradient(160deg, rgba(15, 42, 74, 0.94) 0%, rgba(10, 28, 51, 0.94) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+  /* .landing-overlay IS the card on mobile (above) — .landing-card still wraps the same
+     content underneath it for the desktop layout, so neutralise its own card chrome here
+     rather than removing the element, or the two would stack: two backgrounds, two sets
+     of padding, two shadows, which is what was making this look oversized and muddy. */
+  .landing-overlay .landing-card {
+    background: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+    border: none; border-radius: 0; padding: 0; box-shadow: none;
+  }
+  .landing-overlay .brand-mark-btn { margin-bottom: 6px; }
+  .landing-overlay .brand-mark-btn svg { width: 34px; height: 34px; }
+  .landing-overlay h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .landing-overlay .lead { font-size: 0.76rem; line-height: 1.4; margin: 0 0 6px; }
+  .landing-overlay .fine { font-size: 0.68rem; line-height: 1.35; margin: 4px 0 0; max-width: none; }
+  .landing-overlay .rescuer-link { font-size: 0.78rem; margin-top: 8px; }
+
+  /* Language switch now lives inside the card (see Landing.jsx); the transform above
+     makes this card its containing block, so top/right here are relative to the card
+     itself, not the screen. */
+  .landing-overlay .lang-switch-floating { top: 10px; right: 10px; }
+}
+
+/* Auth screens: same stormy/rain hero as the landing page, now behind the login card */
+.auth-shell { position: relative; min-height: 100vh; background: var(--grad-hero); overflow: hidden; }
+.auth-shell-main { position: relative; z-index: 1; padding-top: 40px; }
+.auth-shell .card { box-shadow: var(--shadow-lg); }
+
+/* Forms */
+label { display: grid; gap: 4px; font-weight: 600; font-size: 0.95rem; }
+label small { font-weight: 400; }
+input, select {
+  font: inherit; padding: 10px 12px; border: 1px solid #b9c5d3; border-radius: 8px; background: #fff; color: var(--text); width: 100%;
+}
+input[type='checkbox'], input[type='radio'] { width: auto; }
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; }
+.resource-counts { margin-top: 10px; display: grid; gap: 6px; }
+.resource-count-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 0.9rem; font-weight: 500;
+}
+.resource-count-row input { width: 80px; padding: 6px 8px; }
+.inline { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.inline input { width: 72px; }
+.switch { text-align: center; margin: 12px 0 0; font-size: 0.95rem; }
+
+/* Buttons */
+.btn {
+  font: inherit; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none;
+  padding: 10px 16px; border-radius: 10px; border: 2px solid transparent; display: inline-block;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn.lg { padding: 14px 20px; font-size: 1.05rem; }
+.btn.sm { padding: 6px 12px; font-size: 0.875rem; }
+.btn.primary { background: var(--grad-primary); color: #fff; box-shadow: 0 6px 16px rgba(232, 89, 12, 0.35); }
+.btn.primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(232, 89, 12, 0.45); }
+.btn.success { background: var(--ok); color: #fff; }
+.btn.danger { background: var(--alert); color: #fff; }
+.btn.outline { background: transparent; border-color: currentColor; color: var(--ink); }
+.btn.outline.danger { color: var(--alert); background: transparent; }
+.btn.outline:hover:not(:disabled) { background: rgba(15, 42, 74, 0.06); }
+.landing .btn.outline { color: #fff; }
+.landing .btn.outline:hover:not(:disabled) { background: rgba(255,255,255,0.12); }
+.btn.ghost { background: transparent; color: inherit; border-color: transparent; text-decoration: underline; }
+.topbar .btn.ghost { color: #dbe6f3; }
+.linklike { background: none; border: 0; padding: 0; font: inherit; color: var(--water); cursor: pointer; text-decoration: underline; }
+.linklike.danger { color: var(--alert); }
+
+/* Notices */
+.notice { border-radius: 8px; padding: 10px 12px; background: #fff4e6; border: 1px solid #ffd8a8; font-size: 0.925rem; margin-top: 12px; text-align: left; }
+.notice.error { background: #fff0f0; border-color: #ffc9c9; color: #7a1414; }
+.notice.ok { background: #ebfbee; border-color: #b2f2bb; color: #1b5e20; }
+.banner.offline { background: var(--ink-2); color: #fff; padding: 8px 16px; text-align: center; font-size: 0.925rem; }
+.toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 2000;
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 8px; max-width: 90vw;
+  box-shadow: 0 6px 20px rgba(15, 42, 74, 0.35);
+}
+
+/* Chips and tabs */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.chips.static { margin: 8px 0 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border: 2px solid var(--line);
+  border-radius: 999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; background: #fff;
+}
+.chips.static .chip { cursor: default; padding: 3px 10px; font-size: 0.8rem; }
+.chip.on { border-color: var(--ink); background: var(--ink); color: #fff; }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip:focus-within { outline: 3px solid var(--water); outline-offset: 2px; }
+
+.field-label { font-weight: 700; font-size: 0.85rem; margin: 0 0 8px; color: var(--text); }
+.sos-block { margin-top: 18px; }
+
+/* Request-type grid: icon + label tiles, the signature control of the SOS flow. Scannable at
+   a glance under stress, which plain text pills in a wrapping row were not. */
+.type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0 4px; }
+.type-tile {
+  display: flex; align-items: center; gap: 10px; padding: 14px 12px; border-radius: 12px;
+  border: 1.5px solid var(--line); background: #fff; color: var(--text); font-weight: 700;
+  font-size: 0.92rem; text-align: left; cursor: pointer; line-height: 1.25;
+}
+.type-tile svg { flex: none; color: var(--muted); }
+.type-tile.on { border-color: var(--ink); background: var(--ink); color: #fff; }
+.type-tile.on svg { color: #fff; }
+.type-tile:active { transform: scale(0.98); }
+
+/* Party-size stepper: one fused capsule instead of three separate boxes, centred under its label */
+.stepper {
+  display: flex; align-items: stretch; border: 1.5px solid var(--ink); border-radius: 999px;
+  overflow: hidden; background: #fff; width: fit-content; margin: 0 auto;
+}
+.stepper-btn {
+  width: 46px; border: 0; background: transparent; color: var(--ink); font-size: 1.4rem; font-weight: 700;
+  cursor: pointer; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
+}
+.stepper-btn:active { background: var(--ink); color: #fff; }
+.stepper-value {
+  min-width: 64px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 1.05rem; font-weight: 800; border-left: 1.5px solid var(--ink); border-right: 1.5px solid var(--ink);
+  padding: 0 4px; color: var(--ink);
+}
+.stepper-value svg { color: var(--muted); }
+
+/* Care tiles: same tile language as the type grid, one tier down in visual weight (blue, not
+   navy) — this is supplementary detail, not the primary choice the category grid is. */
+.care-row { display: flex; gap: 8px; }
+.care-tile {
+  flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px;
+  border-radius: 12px; border: 1.5px solid var(--line); background: #fff; color: var(--text);
+  font-weight: 700; font-size: 0.82rem; cursor: pointer;
+}
+.care-tile svg { color: var(--muted); }
+.care-tile.on { border-color: var(--water); background: #eaf3fc; color: #0b4c86; }
+.care-tile.on svg { color: var(--water); }
+.care-tile:active { transform: scale(0.97); }
+
+.party-info { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
+.party-count { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: var(--text); }
+.party-tag {
+  background: #eaf3fc; color: #0b4c86; border-radius: 999px; padding: 2px 9px; font-weight: 700; font-size: 0.76rem;
+}
+small.party-info { display: flex; margin-top: 4px; color: var(--muted); }
+
+/* Evidence capture: a manual, in-app voice note and/or photo the person deliberately adds to
+   their own SOS. Both only run while this screen is open — see the comment in
+   EvidenceCapture.jsx for why that's a hard limit, not a bug. */
+.evidence { margin: 18px 0 4px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #fafcfe; }
+.evidence-sub { margin: 0 0 12px; }
+.evidence-row { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+.evidence-row:last-child { margin-bottom: 0; }
+.evidence-btn { display: inline-flex; align-items: center; gap: 8px; }
+.rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: inline-block; }
+.evidence-recording { animation: evidence-pulse 1.4s ease-in-out infinite; }
+@keyframes evidence-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+.evidence-clip { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 300px; }
+.evidence-photo { width: 128px; height: 128px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Custom audio player — replaces the native <audio controls>, which renders inconsistently and
+   dated across browsers. One play button, one seekable bar, one time readout. */
+.aplayer { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 5px; max-width: 260px; }
+.aplayer-btn {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--ink); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.aplayer-track { flex: 1; height: 5px; border-radius: 999px; background: var(--line); cursor: pointer; }
+.aplayer-fill { height: 100%; border-radius: 999px; background: var(--water); }
+.aplayer-time { flex: none; font-size: 0.74rem; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* Same evidence, shown read-only on a rescuer's/admin's copy of the request */
+.evidence-view { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.evidence-view-item { display: flex; flex-direction: column; gap: 6px; }
+.evidence-view-label { display: inline-flex; align-items: center; gap: 5px; }
+
+.tabs { display: flex; gap: 4px; background: #e3e9f0; padding: 4px; border-radius: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.tabs button { flex: 1; font: inherit; font-weight: 600; padding: 8px 10px; border: 0; background: transparent; border-radius: 7px; cursor: pointer; color: var(--muted); }
+.tabs button.on { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(15, 42, 74, 0.15); }
+.tabs.big button { padding: 12px; }
+/* Public page's top-level SOS / Safety switcher — bigger than a nested tab strip like
+   the safety-tips before/during/after tabs, since this is the primary navigation here. */
+.ph-tabs { margin: 4px 0 14px; position: sticky; top: 8px; z-index: 5; box-shadow: 0 2px 10px rgba(15, 42, 74, 0.12); }
+.ph-tabs button { padding: 12px; font-size: 1rem; }
+
+/* Hazard banner */
+.hazard { display: flex; gap: 16px; align-items: center; border-left: 8px solid var(--lv); }
+.hazard h2 { margin-bottom: 4px; }
+.hazard p { margin: 0; }
+.hazard-level {
+  min-width: 96px; text-align: center; background: var(--lv); color: #fff; font-weight: 800;
+  font-size: 1.25rem; padding: 14px 10px; border-radius: 8px;
+}
+
+/* Lists */
+.plain { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 4px; }
+.plain li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.plain li small { display: block; }
+.plain li > span:first-child { display: grid; }
+.tips { padding-left: 20px; margin: 0; display: grid; gap: 8px; }
+.pill { font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; color: #fff; white-space: nowrap; }
+.pill.pending { background: var(--signal); }
+.pill.accepted { background: var(--amber); }
+.pill.resolved { background: var(--ok); }
+.pill.muted { background: #868e96; }
+.badge { font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 6px; background: #e3e9f0; }
+.badge.match { display: inline-block; background: #d3f9d8; color: #1b5e20; margin-top: 6px; }
+.badge.duplicate { display: inline-block; background: #fff3cd; color: #8a6400; margin-top: 6px; }
+
+/* Dashboard */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.stat { background: #fff; border: 1px solid var(--line); border-left-width: 6px; border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: baseline; gap: 10px; }
+.stat b { font-size: 1.8rem; }
+.stat span { color: var(--muted); font-weight: 600; }
+.stat.pending { border-left-color: var(--signal); }
+.stat.accepted { border-left-color: var(--amber); }
+.stat.resolved { border-left-color: var(--ok); }
+.dash-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.map-card .row.between { margin-bottom: 8px; }
+.list-card { max-height: calc(100vh - 170px); overflow: auto; }
+.reqs { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.req { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.req.sel { border-color: var(--signal); box-shadow: 0 0 0 2px rgba(232, 89, 12, 0.25); }
+.req-title { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+.req-title svg { flex: none; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+.source-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+.source-badge.source-mesh { background: #FCE8D8; color: #8a4b12; }
+.source-badge.source-public { background: #DCE9F8; color: #1B5FA8; }
+.actions { margin-top: 10px; }
+.sim { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sim select { flex: 1; min-width: 0; }
+.zone-form { display: grid; grid-template-columns: 1fr 160px auto; gap: 8px; margin-top: 10px; }
+.zones { margin-top: 10px; }
+.zones summary { cursor: pointer; font-weight: 600; }
+.idphoto { display: block; margin-top: 10px; font-size: 0.9rem; }
+.idphoto img { display: block; max-width: 100%; max-height: 180px; border-radius: 6px; border: 1px solid var(--line); margin-bottom: 4px; }
+.level-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 16px; }
+
+/* Map */
+.map-wrap { position: relative; z-index: 0; isolation: isolate; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #dfe7ef; }
+.map-wrap.picking .leaflet-container { cursor: crosshair; }
+.map-hint {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 500;
+  background: var(--ink); color: #fff; padding: 6px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 600;
+  pointer-events: none; white-space: nowrap;
+}
+.legend {
+  position: absolute; left: 8px; bottom: 22px; z-index: 500; display: flex; flex-wrap: wrap; gap: 4px 12px;
+  background: rgba(255, 255, 255, 0.92); border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; max-width: calc(100% - 16px);
+}
+.legend span { display: inline-flex; align-items: center; gap: 4px; }
+.legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.legend .dot.ring { background: #fff; border: 3px solid var(--ink); width: 12px; height: 12px; }
+.legend .sq { width: 10px; height: 10px; background: var(--water); border-radius: 2px; display: inline-block; }
+.pin { display: grid; place-items: center; width: 32px; height: 32px; font-size: 16px; }
+.pin-zone { background: var(--water); border: 2px solid #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4); }
+.pin-me { width: 22px; height: 22px; border-radius: 50%; background: #5f3dc4; border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3); position: relative; }
+.pin-me span { position: absolute; inset: -3px; border-radius: 50%; border: 2px solid #5f3dc4; animation: pulse 2s ease-out infinite; }
+@keyframes pulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(2.6); opacity: 0; } }
+
+/* Spinner */
+.spinner { width: 32px; height: 32px; border: 4px solid var(--line); border-top-color: var(--signal); border-radius: 50%; animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Flood assessment */
+.sep { border: 0; border-top: 1px solid var(--line); margin: 20px 0 16px; }
+.flood-panel h3, .assess h3 { font-size: 0.95rem; margin: 16px 0 6px; color: var(--ink); }
+.flood-panel > h3:first-child { margin-top: 12px; }
+.search input { flex: 1; min-width: 0; }
+.picks { margin: 8px 0 12px; }
+.place-form { margin-top: 12px; }
+.zone-elev { grid-column: 1 / -1; color: var(--muted); }
+.suggest { display: flex; gap: 16px; align-items: center; border-left: 8px solid var(--lv); background: #f8fafc; border-radius: 8px; padding: 14px; margin-top: 16px; }
+.suggest p { margin: 2px 0 10px; }
+.assess { margin-top: 12px; }
+.assess p { margin: 0 0 8px; }
+.reasons { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.tbl { border-collapse: collapse; font-size: 0.9rem; margin: 4px 0 8px; }
+.tbl th, .tbl td { text-align: left; padding: 4px 16px 4px 0; border-bottom: 1px solid var(--line); }
+.forecast { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.forecast li { display: grid; grid-template-columns: 52px 1fr 64px; gap: 8px; align-items: center; font-size: 0.875rem; }
+.forecast .bar { background: #e3e9f0; border-radius: 4px; height: 10px; overflow: hidden; }
+.forecast .bar i { display: block; height: 100%; background: var(--water); min-width: 2px; }
+.forecast .bar i.h { background: var(--amber); }
+.forecast .bar i.vh { background: var(--signal); }
+.forecast .bar i.x { background: var(--alert); }
+.why summary { cursor: pointer; font-weight: 600; }
+.why[open] summary { margin-bottom: 8px; }
+
+@media (max-width: 900px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .list-card { max-height: none; }
+}
+@media (max-width: 520px) {
+  .landing h1 { font-size: 2.1rem; }
+  .hazard { flex-direction: column; align-items: flex-start; }
+  .zone-form { grid-template-columns: 1fr; }
+  .stat { flex-direction: column; gap: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner, .pin-me span { animation: none; }
+}
