@@ -8,12 +8,12 @@ import {
 } from 'firebase/firestore'
 
 export const firebaseConfig = {
-  apiKey: 'AIzaSyCB5peTlldLBJfZ3a42jjxPAIy32O37fK4',
-  authDomain: 'dhriti-e7949.firebaseapp.com',
-  projectId: 'dhriti-e7949',
-  storageBucket: 'dhriti-e7949.firebasestorage.app',
-  messagingSenderId: '808907983984',
-  appId: '1:808907983984:web:ee875ba618a6611d6c78b5',
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: '',
 }
 
 // The Firestore database this app talks to. Must match the Database ID shown at the top of
